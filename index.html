@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#061326">
+<link rel="manifest" href="manifest.webmanifest">
+<title>MEGH AI</title>
+<style>
+:root{color-scheme:dark;--cyan:#57dfff;--blue:#167cff}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 50% 22%,#123b68 0,#07172d 38%,#020812 100%);font-family:system-ui,"Noto Sans Bengali",sans-serif;color:#eaf8ff;min-height:100vh}
+main{max-width:620px;margin:auto;padding:env(safe-area-inset-top) 16px calc(18px + env(safe-area-inset-bottom));min-height:100dvh;display:flex;flex-direction:column}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 4px}
+.brand{font-weight:800;letter-spacing:4px;color:var(--cyan);font-size:22px;text-shadow:0 0 16px #19baff}
+.status{font-size:12px;color:#9ac6df}
+.core-wrap{display:grid;place-items:center;padding:14px 0 18px}
+.core{width:190px;height:190px;border-radius:50%;border:1px solid #3bcfff;display:grid;place-items:center;box-shadow:0 0 22px #00aaff66,inset 0 0 30px #008cff44;position:relative;background:radial-gradient(circle,#174b75 0,#07182b 65%)}
+.core:before,.core:after{content:"";position:absolute;inset:-13px;border:1px solid #3bcfff66;border-radius:50%;animation:pulse 3s infinite}
+.core:after{inset:-25px;animation-delay:1.2s}
+.face{font-size:54px;color:#8beaff;text-shadow:0 0 18px #00bfff;letter-spacing:8px}
+@keyframes pulse{50%{transform:scale(1.06);opacity:.25}}
+h1{font-size:20px;text-align:center;margin:2px 0 4px}
+.sub{text-align:center;color:#9bbbd0;font-size:13px;margin-bottom:18px}
+.chat{flex:1;min-height:180px;max-height:36vh;overflow:auto;border:1px solid #1e496b;background:#04101f99;border-radius:16px;padding:12px}
+.msg{padding:10px 12px;border-radius:13px;margin:8px 0;line-height:1.5;white-space:pre-wrap;font-size:14px;max-width:92%}
+.bot{background:#0d2d49;border:1px solid #1a638b;margin-right:auto}
+.user{background:#123f75;border:1px solid #2879c5;margin-left:auto}
+.controls{display:flex;gap:8px;margin-top:12px}
+input{min-width:0;flex:1;background:#071a2c;border:1px solid #286084;color:white;border-radius:12px;padding:13px;font-size:15px}
+button{border:1px solid #2a8dc1;background:linear-gradient(135deg,#0b4c7a,#1268a0);color:white;border-radius:12px;padding:12px 14px;font-weight:650}
+button:active{transform:scale(.97)}.mic{width:100%;margin-top:9px;padding:15px;border-radius:14px;background:linear-gradient(90deg,#075d9d,#087caa);font-size:15px}
+.small{font-size:11px;color:#83a8bd;text-align:center;line-height:1.5;margin-top:12px}
+</style>
+</head>
+<body>
+<main>
+<header><div class="brand">MEGH AI</div><div class="status" id="status">SYSTEM READY</div></header>
+<div class="core-wrap"><div class="core"><div class="face">◉‿◉</div></div></div>
+<h1>আমি মেঘ, আপনার ব্যক্তিগত সহকারী</h1>
+<div class="sub">বাংলায় কথা বলুন • Ask me anything</div>
+<section class="chat" id="chat" aria-live="polite">
+<div class="msg bot">হ্যালো! আমি মেঘ। নিচের মাইক্রোফোন বাটনে চাপ দিয়ে কথা বলুন, অথবা লিখে পাঠান।</div>
+</section>
+<div class="controls">
+<input id="entry" placeholder="এখানে লিখুন..." autocomplete="off">
+<button id="send">পাঠান</button>
+</div>
+<button class="mic" id="mic">🎙️ কথা বলুন</button>
+<div class="small">প্রাথমিক মোবাইল প্রোটোটাইপ। ভয়েস ফিচারের জন্য ইন্টারনেট ও মাইক্রোফোন অনুমতি লাগতে পারে।<br>এই সংস্করণে এখনো পূর্ণ AI যুক্ত হয়নি; সাধারণ কিছু প্রশ্নের উত্তর ও ওয়েব সার্চ চালু আছে।</div>
+</main>
+<script>
+const chat=document.getElementById('chat'), statusEl=document.getElementById('status');
+function add(text,who){const d=document.createElement('div');d.className='msg '+who;d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
+function speak(t){if(!('speechSynthesis'in window))return; speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang='bn-BD';u.rate=.95;speechSynthesis.speak(u);}
+function reply(q){
+ const s=q.toLowerCase();
+ if(/হ্যালো|হাই|hello|hi/.test(s)) return 'হ্যালো! আমি ভালো আছি। আপনি কেমন আছেন?';
+ if(/নাম কী|তোমার নাম|কে তুমি/.test(s)) return 'আমার নাম মেঘ। আমি আপনার ব্যক্তিগত AI সহকারী হওয়ার পথে আছি।';
+ if(/সময়|কয়টা বাজে/.test(s)) return 'আপনার ফোনের বর্তমান সময় হলো '+new Date().toLocaleTimeString('bn-BD',{hour:'numeric',minute:'2-digit'})+'.';
+ if(/তারিখ|আজ কত/.test(s)) return 'আজ '+new Date().toLocaleDateString('bn-BD',{dateStyle:'full'})+'.';
+ if(/গল্প|ছড়া|কবিতা/.test(s)) return 'এক ছিল ছোট্ট তারা,\nআকাশ জুড়ে দেয় সে আলো,\nহাসি দিয়ে দিনটা শুরু,\nসবাই মিলে থাকি ভালো!';
+ if(/ধন্যবাদ/.test(s)) return 'আপনাকে স্বাগতম! আপনার কাজে লাগতে পারলে আমার ভালো লাগে।';
+ if(/খবর|আবহাওয়া|weather|news|ইন্টারনেট/.test(s)) {window.open('https://www.google.com/search?q='+encodeURIComponent(q),'_blank');return 'আপনার প্রশ্নটি ওয়েবে খুঁজে দেখার জন্য খুলে দিয়েছি।';}
+ return 'আপনার কথা বুঝেছি: “'+q+'”। এই প্রাথমিক সংস্করণে আমার জ্ঞানের সীমা আছে। পূর্ণ AI উত্তর পেতে পরবর্তী ধাপে নিরাপদ AI সংযোগ যুক্ত করতে হবে। চাইলে প্রশ্নটি ওয়েবে খুঁজে দেখতে পারি।';
+}
+function send(q){q=q.trim();if(!q)return;add(q,'user');document.getElementById('entry').value='';const a=reply(q);setTimeout(()=>{add(a,'bot');speak(a)},250);}
+document.getElementById('send').onclick=()=>send(document.getElementById('entry').value);
+document.getElementById('entry').addEventListener('keydown',e=>{if(e.key==='Enter')send(e.target.value)});
+const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null;
+if(SpeechRecognition){rec=new SpeechRecognition();rec.lang='bn-BD';rec.continuous=false;rec.interimResults=false;rec.onstart=()=>{statusEl.textContent='LISTENING...';document.getElementById('mic').textContent='🎙️ শুনছি...'};rec.onend=()=>{statusEl.textContent='SYSTEM READY';document.getElementById('mic').textContent='🎙️ আবার কথা বলুন'};rec.onerror=()=>{statusEl.textContent='MIC ERROR';};rec.onresult=e=>send(e.results[0][0].transcript);}
+document.getElementById('mic').onclick=()=>{if(!rec){add('এই ব্রাউজারে ভয়েস ইনপুট সমর্থিত নয়। Android Chrome-এ চেষ্টা করুন।','bot');return;}try{rec.start()}catch(e){statusEl.textContent='TRY AGAIN';}};
+if('serviceWorker'in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body>
+</html>

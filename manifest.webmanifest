@@ -1,0 +1,9 @@
+{
+  "name": "MEGH AI",
+  "short_name": "MEGH",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#061326",
+  "theme_color": "#061326",
+  "description": "Bangla voice assistant prototype"
+}
